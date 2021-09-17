@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH --job-name=real_data_SNF                # Job name
+#SBATCH --mail-type=BEGIN,END,FAIL                 # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --mail-user=liyijun@umich.edu     # Where to send mail
+#SBATCH --nodelist=garmire-gpu01
+#SBATCH --mem=5gb                        # Job memory request
+#SBATCH --time=24:00:00                    # Time limit hrs:min:sec
+#SBATCH --array=15-19
+#SBATCH --output=outfiles/%x-%A-%a
+
+module load anaconda3
+conda activate scvi_snf
+
+data_path=data_analysis
+data_ref=real_data/Visium
+diff_in_cov=0.15
+svg_pval_thres=0.000005
+num_nn=30
+ndims=5
+scVI_error=reconstruction
+SNF_metric=sqeuclidean
+WNN_smooth=0
+CIMLR_k=10
+save_name=ndims
+
+python3 real_data_SNF.py $SLURM_ARRAY_TASK_ID $data_path $data_ref $diff_in_cov $svg_pval_thres $num_nn $ndims $scVI_error $SNF_metric $WNN_smooth $CIMLR_k $save_name

@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --job-name=sim_clus_bin_ground_truth
+#SBATCH --time=24:00:00
+#SBATCH --mail-user=liyijun@umich.edu
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mem=5GB
+#SBATCH --cpus-per-task=1
+#SBATCH --array=1-25
+#SBATCH --output=outfiles/%x-%A-%a
+
+module load R/4.0.2 gcc/8.2.0
+module load users/liyijun/lib/R/giotto/1.0.3
+
+data_path=simulation/simulation_07202021
+thres=0.6
+data_ref=ST_MOB1
+diff_in_cov=0.1
+svg_pval_thres=0.001
+num_nn=30
+ndims=15
+scVI_error=reconstruction
+SNF_metric=sqeuclidean
+WNN_smooth=0
+CIMLR_k=10
+save_name=svg_pval_thres
+n_random_reps=5
+
+Rscript sim_clus_bin_ground_truth.R $data_path $thres $data_ref $diff_in_cov $svg_pval_thres $num_nn $ndims $scVI_error $SNF_metric $WNN_smooth $CIMLR_k $save_name $n_random_reps

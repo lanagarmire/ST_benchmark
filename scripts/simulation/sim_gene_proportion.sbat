@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name=sim_gene_proportion
+#SBATCH --time=24:00:00
+#SBATCH --mail-user=liyijun@umich.edu
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mem=20GB
+#SBATCH --cpus-per-task=1
+#SBATCH --output=outfiles/%x-%j
+
+module load R/4.0.2 gcc/8.2.0
+module load users/liyijun/lib/R/giotto/1.0.3
+
+data_path=simulation/simulation_04302021
+data_ref=ST_MOB1
+
+Rscript sim_gene_proportion.R $data_path $data_ref
