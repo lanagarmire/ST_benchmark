@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --job-name=real_data_full
+#SBATCH --time=24:00:00
+#SBATCH --mail-user=liyijun@umich.edu
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mem=5GB
+#SBATCH --cpus-per-task=1
+#SBATCH --array=1-35
+#SBATCH --output=outfiles/%x-%A-%a
+
+module load R/4.0.2 gcc/8.2.0
+
+data_path=data_analysis/real_data/runtime_features
+
+Rscript runtime_getfull.R $data_path
