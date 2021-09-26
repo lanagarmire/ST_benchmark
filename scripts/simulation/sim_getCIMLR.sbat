@@ -5,7 +5,7 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mem=15GB
 #SBATCH --cpus-per-task=1
-#SBATCH --array=7
+#SBATCH --array=1
 #SBATCH --output=outfiles/%x-%A-%a
 
 module load R/4.0.2 gcc/8.2.0

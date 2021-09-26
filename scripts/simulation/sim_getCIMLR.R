@@ -1,5 +1,5 @@
 rm(list=ls())
-setwd("/home/liyijun/ST_benchmark_01082020/")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1/")
 source("functions/run_cimlr_03232021.R")
 library(data.table)
 
@@ -44,7 +44,6 @@ if(!dir.exists(save_path)){
 }
 
 #### load simulation parameters
-#seed_list = c(1:n_random_reps)+12345-1
 params_df = read.csv(fs::path(data_path,"sim_params_df",ext="csv"),row.names = 1)
 method_proc = read.csv("method_proc.csv", row.names = 1)
 method_name = "CIMLR"
@@ -75,15 +74,14 @@ if(ndims==0){
 print(ndims)
 
 ### run CIMLR
-set.seed(12345) #08172021 changed
+set.seed(12345)
 
-#for(i in 1:length(seed_list)){
-  CIMLR_bin_clus = run_cimlr(hvg_data = HVG_dat, svg_data = SG_bin_dat, ncl_truth = cl0, no.dim = ndims, cores.ratio=cores_ratio)
-  table(CIMLR_bin_clus$cluster_label$CIMLR_clus)
+CIMLR_bin_clus = run_cimlr(hvg_data = HVG_dat, svg_data = SG_bin_dat, ncl_truth = cl0, no.dim = ndims, cores.ratio=cores_ratio)
+table(CIMLR_bin_clus$cluster_label$CIMLR_clus)
 
-  CIMLR_save_path = fs::path(save_path, "results", "cluster", method_name)
-  if(!dir.exists(CIMLR_save_path)){
-    dir.create(CIMLR_save_path,recursive = T)
-  }
-  save(CIMLR_bin_clus, file = fs::path(CIMLR_save_path, paste(fname_attach, "CIMLR", "dim", ndims, "bin_clus", sep = "_"), ext="RData"))
-#}
+CIMLR_save_path = fs::path(save_path, "results", "cluster", method_name)
+if(!dir.exists(CIMLR_save_path)){
+  dir.create(CIMLR_save_path,recursive = T)
+}
+save(CIMLR_bin_clus, file = fs::path(CIMLR_save_path, paste(fname_attach, "CIMLR", "dim", ndims, "bin_clus", sep = "_"), ext="RData"))
+

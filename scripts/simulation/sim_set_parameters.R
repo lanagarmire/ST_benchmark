@@ -1,6 +1,6 @@
 rm(list=ls())
 
-setwd("/home/liyijun/ST_benchmark_01082020")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1")
 library(data.table)
 
 args = commandArgs(trailingOnly = TRUE)

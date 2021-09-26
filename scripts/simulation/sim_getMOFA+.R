@@ -1,5 +1,4 @@
-#.libPaths( c( "/nfs/home/jingzhe/R/x86_64-pc-linux-gnu-library/4.0" , .libPaths() ) )
-setwd('/home/liyijun/ST_benchmark_01082020') #change
+setwd('/home/liyijun/ST_benchmark_01082020_re_1') #change
 library(MOFA2)
 library(data.table)
 library(dplyr)
@@ -7,14 +6,10 @@ library(dplyr)
 #### get arguments from bash scripts
 args = commandArgs(trailingOnly = TRUE)
 data_path = as.character(args[1])
-#data_path = "simulation/simulation_04302021"
 thres = as.numeric(args[2])
-#thres=0.6
 data_ref = as.character(args[3])
-#data_ref="ST_MOB1"
 diff_in_cov = as.numeric(args[4])
 svg_pval_thres = as.numeric(args[5])
-#num_nn = as.numeric(args[6])
 ndims = as.numeric(args[6])
 scVI_error = as.character(args[7])
 SNF_metric = as.character(args[8])
@@ -70,4 +65,4 @@ for(i in 1:length(seed_list)){
 
   write.csv(factors, fs::path(save_path, "results", method_name, paste(data_name, method_name, "dim", ndims, "bin", seed_list[i], sep = "_"), ext = "csv"),quote=FALSE)
 }
-#change date
+

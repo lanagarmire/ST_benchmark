@@ -1,5 +1,5 @@
 #rm(list=ls())
-setwd("/home/liyijun/ST_benchmark_01082020/")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1/")
 source("functions/getCluster_Leiden_02222021.R")
 library(Matrix)
 library(data.table)
