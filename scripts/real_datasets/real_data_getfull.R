@@ -1,7 +1,7 @@
 rm(list=ls())
 library(data.table)
 library(Giotto)
-setwd("/home/liyijun/ST_benchmark_01082020")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1")
 
 #### get arguments
 args = commandArgs(trailingOnly = TRUE)
@@ -38,7 +38,6 @@ if(!dir.exists(save_path)){
 }
 
 
-#### load simulation parameters
 method_proc = read.csv("method_proc.csv",row.names = 1)
 method_name = "full"
 proc = method_proc[method_name,]

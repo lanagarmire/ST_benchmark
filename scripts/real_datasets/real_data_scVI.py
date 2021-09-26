@@ -1,13 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 16 15:45:07 2021
-
-@author: stefs
-"""
-
 import numpy as np
 import pandas as pd
-#import plotnine as p9
 
 import scanpy as sc
 import scvi
@@ -24,7 +16,6 @@ import torch
 import random
 
 faulthandler.enable()
-#from tqdm.notebook import tqdm
 from tqdm import tqdm
 
 sc.set_figure_params(figsize=(4, 4))
@@ -89,42 +80,6 @@ def train_model(file_name_svg, file_name_hvg, n_latent, desired_num_clusters, se
 
 
 
-def get_ami(adata,annot_name = "ST_MOB1_annotations.csv"):
-
-  annotations = pd.read_csv(annot_name)
-  leiden_labels = adata.obs["leiden_scVI"].astype(int).values + 1
-  ground_labels = annotations["group"].values
-
-  ami = skm.adjusted_mutual_info_score(leiden_labels,ground_labels)
-  print("AMI score is ",ami)
-  #return ami
-
-
-
-def plot_data(adata,annot_name = "ST_MOB1_annotations.csv"):
-
-  sc.pl.umap(
-    adata,
-    color = "leiden_scVI",
-    title = "scVI Labels",
-    save = "Visium_Mouse_Kidney/MK_scVI_labels.pdf",
-    show = False
-  )
-
-  annotations = pd.read_csv(annot_name)
-  adata.obs["ground_truth_labels"] = annotations["x"].values
-  adata.obs["ground_truth_labels"] = adata.obs["ground_truth_labels"].astype("category")
-
-  sc.pl.umap(
-    adata,
-    color = "ground_truth_labels",
-    title = "Ground Truth Labels",
-    save = "Visium_Mouse_Kidney/ground_truth_labels.pdf",
-    show = False
-  )
-
-
-
 def grid_search(file_name_svg, file_name_hvg, desired_num_clusters, seed, list_latent = [], list_hidden = [], list_dropouts = [0.2], gene_likelihood = ["zinb"], latent_distribution = ["normal"], default_resolution = 0.8, num_nn = 30, error_measure="reconstruction"):
 
   best_metric = -1.0
@@ -158,13 +113,13 @@ def main(job_id, data_path, data_ref, diff_in_cov, svg_pval_thres, num_nn, ndims
     print("The job ID is ",job_id)
 
     'set working directory'
-    os.chdir("/home/liyijun/ST_benchmark_01082020")
+    os.chdir("/home/liyijun/ST_benchmark_01082020_re_1")
     os.chdir(data_path)
 
     'load parameters'
     params_name = f"{data_ref}/real_data_names.csv"
     params_df = pd.read_csv(params_name, dtype = str).drop(columns="Unnamed: 0")
-    method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020/method_proc.csv', index_col = 0)
+    method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020_re_1/method_proc.csv', index_col = 0)
     method_name = "scVI"
     
     if save_name == "diff_in_cov":

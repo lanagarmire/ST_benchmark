@@ -1,5 +1,5 @@
 #rm(list=ls())
-setwd("/home/liyijun/ST_benchmark_01082020/")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1/")
 source("functions/getCluster_Leiden_02222021.R")
 library(Matrix)
 library(data.table)
@@ -37,13 +37,11 @@ if(save_name == "diff_in_cov"){
   save_path = fs::path(data_path, data_ref, paste(save_name, format(CIMLR_k,drop0Trailing=F), sep="_"))
 }
 
-#save_path = fs::path(data_path, data_ref, paste("thres",thres,sep="_"),"data")
 if(!dir.exists(save_path)){
   dir.create(save_path, recursive = T)
 }
 
 
-#### load simulation parameters
 seed_list = c(1:n_random_reps)+12345-1
 params_df = read.csv(fs::path(data_path, data_ref, "real_data_names",ext="csv"),row.names = 1)
 method_proc = read.csv("method_proc.csv", row.names = 1)
@@ -53,7 +51,6 @@ task_id = as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 fname_attach = params_df$name[task_id]
 load(fs::path(data_path, data_ref, "data", fname_attach, ext = "RData"))
 cl0 = length(unique(annotation$group))
-#cl0 = length(unique(annotation$cell_types_coarse))
 
 ####### load HVG
 HVG_path = fs::path(save_path, "results", "HVG")
@@ -79,75 +76,75 @@ if(ndims==0){
 
 ####### run clustering analysis
 ### HVG
-#HVG_LC = getCluster_Leiden(gene_expr=HVG_dat, 
-#                               spat_mat=spatial, 
-#                               data_type = "HVG", 
-#                               reduced = FALSE,
-#                               pc_dims = min(ndims, nrow(HVG_dat)), 
-#                               ncl_truth = cl0, 
-#                               res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
-#                               py_path = python_path, num_neighbors = num_nn, pb = T)
-#save_path_HVG = fs::path(save_path, "results", "cluster", "HVG")
-#if(!dir.exists(save_path_HVG)){
-#  dir.create(save_path_HVG, recursive = T)
-#}
-#save(HVG_LC, file = fs::path(save_path_HVG, paste(fname_attach, "HVG_dim", ndims, "LC", sep = "_"), ext="RData"))
+HVG_LC = getCluster_Leiden(gene_expr=HVG_dat, 
+                               spat_mat=spatial, 
+                               data_type = "HVG", 
+                               reduced = FALSE,
+                               pc_dims = min(ndims, nrow(HVG_dat)), 
+                               ncl_truth = cl0, 
+                               res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
+                               py_path = python_path, num_neighbors = num_nn, pb = T)
+save_path_HVG = fs::path(save_path, "results", "cluster", "HVG")
+if(!dir.exists(save_path_HVG)){
+  dir.create(save_path_HVG, recursive = T)
+}
+save(HVG_LC, file = fs::path(save_path_HVG, paste(fname_attach, "HVG_dim", ndims, "LC", sep = "_"), ext="RData"))
 
 ##### SG
-#SG_bin_LC = getCluster_Leiden(gene_expr=SG_bin_dat, 
-#                                  spat_mat=spatial, 
-#                                  data_type = "SG", 
-#                                  reduced = FALSE,
-#                                  pc_dims = min(ndims,nrow(SG_bin_dat)), 
-#                                  ncl_truth = cl0, 
-#                                  res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
-#                                  py_path = python_path, num_neighbors = num_nn, pb = T)
-#save_path_SG = fs::path(save_path, "results", "cluster", "SG")
-#if(!dir.exists(save_path_SG)){
-#  dir.create(save_path_SG, recursive = T)
-#}
-#save(SG_bin_LC, file = fs::path(save_path_SG, paste(fname_attach, "SG_dim", ndims, "bin_LC", sep = "_"),ext="RData"))
+SG_bin_LC = getCluster_Leiden(gene_expr=SG_bin_dat, 
+                                  spat_mat=spatial, 
+                                  data_type = "SG", 
+                                  reduced = FALSE,
+                                  pc_dims = min(ndims,nrow(SG_bin_dat)), 
+                                  ncl_truth = cl0, 
+                                  res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
+                                  py_path = python_path, num_neighbors = num_nn, pb = T)
+save_path_SG = fs::path(save_path, "results", "cluster", "SG")
+if(!dir.exists(save_path_SG)){
+  dir.create(save_path_SG, recursive = T)
+}
+save(SG_bin_LC, file = fs::path(save_path_SG, paste(fname_attach, "SG_dim", ndims, "bin_LC", sep = "_"),ext="RData"))
 
 ### full
-#concatenation_data_name = paste(fname_attach, "concatenation_bin", sep = "_")
-#load(fs::path(save_path, "results", "concatenation", concatenation_data_name, ext="RData"))
-#concatenation_bin_LC = getCluster_Leiden(gene_expr=concatenation_bin, 
-#                                    spat_mat=spatial, 
-#                                    data_type = "concatenation", 
-#                                    reduced = FALSE,
-#                                    pc_dims = min(ndims,nrow(concatenation_bin)), 
-#                                    ncl_truth = cl0, 
-#                                    res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
-#                                    py_path = python_path, num_neighbors = num_nn, pb = T)
-#save_path_concatenation = fs::path(save_path, "results", "cluster", "concatenation")
-#if(!dir.exists(save_path_concatenation)){
-#  dir.create(save_path_concatenation, recursive = T)
-#}
-#save(concatenation_bin_LC,
-#     file = fs::path(save_path_concatenation, paste(fname_attach, "concatenation_dim", ndims, "bin_LC", sep = "_"), ext="RData"))
+concatenation_data_name = paste(fname_attach, "concatenation_bin", sep = "_")
+load(fs::path(save_path, "results", "concatenation", concatenation_data_name, ext="RData"))
+concatenation_bin_LC = getCluster_Leiden(gene_expr=concatenation_bin, 
+                                    spat_mat=spatial, 
+                                    data_type = "concatenation", 
+                                    reduced = FALSE,
+                                    pc_dims = min(ndims,nrow(concatenation_bin)), 
+                                    ncl_truth = cl0, 
+                                    res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
+                                    py_path = python_path, num_neighbors = num_nn, pb = T)
+save_path_concatenation = fs::path(save_path, "results", "cluster", "concatenation")
+if(!dir.exists(save_path_concatenation)){
+  dir.create(save_path_concatenation, recursive = T)
+}
+save(concatenation_bin_LC,
+     file = fs::path(save_path_concatenation, paste(fname_attach, "concatenation_dim", ndims, "bin_LC", sep = "_"), ext="RData"))
 
 ### MOFA+
-#for(i in 1:length(seed_list)){
-#  MOFAp_fname_attach = paste(fname_attach, "MOFA+_dim", ndims, "bin", seed_list[i], sep = "_")
-#  MOFAp_bin = read.csv(file = fs::path(save_path, "results", "MOFA+", MOFAp_fname_attach, ext="csv"), row.names = 1)
-#  dim(MOFAp_bin)
-#  dim(annotation)
-#  row.names(MOFAp_bin) = annotation$cell_ID #assign cell names
-#  MOFAp_bin_LC = getCluster_Leiden(gene_expr=t(MOFAp_bin),
-#                                     spat_mat=spatial,
-#                                     data_type = "MOFA+",
-#                                     reduced = TRUE,
-#                                     pc_dims = ndims,
-#                                     ncl_truth = cl0,
-#                                     res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
-#                                     py_path = python_path, num_neighbors = num_nn, pb = T)
-#  save_path_MOFAp = fs::path(save_path, "results", "cluster", "MOFA+")
-#  if(!dir.exists(save_path_MOFAp)){
-#    dir.create(save_path_MOFAp, recursive = T)
-#  }
-#  save(MOFAp_bin_LC,
-#     file = fs::path(save_path_MOFAp, paste(fname_attach, "MOFA+_dim", ndims, "bin_LC", seed_list[i], sep = "_"), ext="RData"))
-#}
+for(i in 1:length(seed_list)){
+  MOFAp_fname_attach = paste(fname_attach, "MOFA+_dim", ndims, "bin", seed_list[i], sep = "_")
+  MOFAp_bin = read.csv(file = fs::path(save_path, "results", "MOFA+", MOFAp_fname_attach, ext="csv"), row.names = 1)
+  dim(MOFAp_bin)
+  dim(annotation)
+  row.names(MOFAp_bin) = annotation$cell_ID #assign cell names
+  MOFAp_bin_LC = getCluster_Leiden(gene_expr=t(MOFAp_bin),
+                                     spat_mat=spatial,
+                                     data_type = "MOFA+",
+                                     reduced = TRUE,
+                                     pc_dims = ndims,
+                                     ncl_truth = cl0,
+                                     res = 0.5, res_step = 0.1, max_iter = 100, num_iter = -1,
+                                     py_path = python_path, num_neighbors = num_nn, pb = T)
+  save_path_MOFAp = fs::path(save_path, "results", "cluster", "MOFA+")
+  if(!dir.exists(save_path_MOFAp)){
+    dir.create(save_path_MOFAp, recursive = T)
+  }
+  save(MOFAp_bin_LC,
+     file = fs::path(save_path_MOFAp, paste(fname_attach, "MOFA+_dim", ndims, "bin_LC", seed_list[i], sep = "_"), ext="RData"))
+}
 
 ### scVI
 for(i in 1:length(seed_list)){
@@ -173,12 +170,12 @@ for(i in 1:length(seed_list)){
 }
 
 ### SNF
-#save_path_SNF = fs::path(save_path, "results", "cluster", "SNF")
-#SNF_bin = read.csv(fs::path(save_path_SNF, paste(fname_attach, "SNF", "bin_LC", sep = "_"), ext="csv"))
-#SNF_bin_LC = data.frame(cell_ID = annotation$cell_ID, LC_SNF_clus = SNF_bin$x) 
-#head(SNF_bin_LC)
-#table(SNF_bin_LC$LC_SNF_clus)
-#if(!dir.exists(save_path_SNF)){
-#  dir.create(save_path_SNF, recursive = T)
-#}
-#save(SNF_bin_LC, file = fs::path(save_path_SNF, paste(fname_attach, "SNF", "bin_LC", sep = "_"), ext="RData"))
+save_path_SNF = fs::path(save_path, "results", "cluster", "SNF")
+SNF_bin = read.csv(fs::path(save_path_SNF, paste(fname_attach, "SNF", "bin_LC", sep = "_"), ext="csv"))
+SNF_bin_LC = data.frame(cell_ID = annotation$cell_ID, LC_SNF_clus = SNF_bin$x) 
+head(SNF_bin_LC)
+table(SNF_bin_LC$LC_SNF_clus)
+if(!dir.exists(save_path_SNF)){
+  dir.create(save_path_SNF, recursive = T)
+}
+save(SNF_bin_LC, file = fs::path(save_path_SNF, paste(fname_attach, "SNF", "bin_LC", sep = "_"), ext="RData"))

@@ -1,5 +1,5 @@
 rm(list = ls())
-setwd("/home/liyijun/ST_benchmark_01082020/")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1/")
 source("functions/combine_Seuratv4_02192021.R")
 library(data.table)
 
@@ -46,7 +46,6 @@ task_id = as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 fname_attach = params_df$name[task_id]
 load(fs::path(data_path, data_ref, "data", fname_attach, ext = "RData"))
 cl0 = length(unique(annotation$group))
-#cl0 = length(unique(annotation$cell_types_coarse))
 
 ####### load HVG
 HVG_path = fs::path(save_path, "results", "HVG")

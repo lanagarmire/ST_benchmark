@@ -1,5 +1,5 @@
 #rm(list=ls())
-setwd("/home/liyijun/ST_benchmark_01082020")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1") ################# set your own root directory here
 source("functions/spat_metric_03192021.R")
 library(aricode)
 library(clusterSim)
@@ -52,7 +52,7 @@ NR_model_levels = c("concatenation", "WNN", "SNF", "CIMLR", "SG", "HVG")
 R_model_type = c("integration", "integration")
 NR_model_type = c("integration", "integration", "integration", "integration", "control", "control")
 
-#### load simulation parameters
+#### load list of real datasets
 params_df = read.csv(fs::path(data_path, data_ref, "real_data_names",ext="csv"),row.names = 1)
 
 ##### save parameters
@@ -60,7 +60,7 @@ fname = random_rep_id =  model = type = ARI = AMI = DBI = DBI_truth = AIC = AIC0
 #print(nrow(params_df))
 
 ### compute metrics
-for(i in 15:19){
+for(i in 1:nrow(params_df)){
   ## load data
   fname_attach = params_df$name[i]
   print(fname_attach)
@@ -78,7 +78,6 @@ for(i in 15:19){
   annotation = annotation %>% mutate(cell_ID = gsub("-","\\.", cell_ID))
   spatial = spatial[which(annotation$cell_ID %in% cells_remaining),]
   annotation = annotation %>% filter(cell_ID %in% cells_remaining)
-  #annotation$group = as.numeric(as.factor(annotation$cell_types_coarse))
 
   ###### ground truth marker genes
   instrs = createGiottoInstructions(python_path = python_path)
@@ -86,10 +85,10 @@ for(i in 15:19){
                                spatial_locs=HVG_GO@spatial_locs[,c(1,2)], 
                                instructions=instrs)
   GO_test@cell_metadata$clust_truth = annotation$group
-  #s = Sys.time()
+
   markers_truth_df = findMarkers_one_vs_all(GO_test, method = "gini", min_genes=0, 
                                             cluster_column="clust_truth")
-  #t = Sys.time(); print(t-s)
+
   markers_truth = markers_truth_df$genes
 
   ###### load clustering results
@@ -171,9 +170,8 @@ for(i in 15:19){
       load(fs::path(save_path, "results", "cluster", NR_model_levels[t],
                     paste(fname_attach, NR_model_levels[t], "dim", ndims, "bin_LC", sep = "_"),ext = "RData"))
       GO = eval(as.name(paste(NR_model_levels[t], "bin_LC", sep = "_")))
-      #print(names(GO))
+
       label_df = GO$cluster_label
-      #print(head(label_df))
     }
 
     ### check number of clusters
@@ -187,7 +185,6 @@ for(i in 15:19){
     DBI = c(DBI, index.DB(x=spatial, cl = as.numeric(label_df[,clus_name]))$DB)
     ARI = c(ARI, ARI(label_df[,clus_name], annotation$group))
     AMI = c(AMI, AMI(label_df[,clus_name], annotation$group))
-    #DBI_truth = c(DBI_truth, index.DB(x=spatial, cl = as.numeric(annotation$group))$DB)
     if(class(annotation$group) == "character"){
       DBI_truth = c(DBI_truth, index.DB(x=spatial, cl = as.numeric(as.factor(annotation$group)))$DB)
     }else{
@@ -209,7 +206,6 @@ for(i in 15:19){
     
     print(NR_model_levels[t])
   }
-  #print(i)    
 }
 
 metrics = data.frame(data_name = fname, random_rep_id = random_rep_id, model = model, type = type, 
