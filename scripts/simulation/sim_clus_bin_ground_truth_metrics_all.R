@@ -1,5 +1,5 @@
 #rm(list=ls())
-setwd("/home/liyijun/ST_benchmark_01082020")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1")
 source("functions/spat_metric_03192021.R")
 library(aricode)
 library(clusterSim)

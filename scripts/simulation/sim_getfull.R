@@ -1,7 +1,7 @@
 rm(list=ls())
 library(data.table)
 library(Giotto)
-setwd("/home/liyijun/ST_benchmark_01082020")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1")
 
 #### get arguments
 args = commandArgs(trailingOnly = TRUE)

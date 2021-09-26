@@ -3,19 +3,15 @@ library(Giotto)
 library(dplyr)
 library(Matrix)
 library(data.table)
-setwd("/home/liyijun/ST_benchmark_01082020")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1")
 
 #### get arguments from bash scripts
 args = commandArgs(trailingOnly = TRUE)
 data_path = as.character(args[1])
-#data_path = "simulation/simulation_04302021"
 thres = as.numeric(args[2])
-#thres=0.6
 data_ref = as.character(args[3])
-#data_ref="ST_MOB1"
 diff_in_cov = as.numeric(args[4])
 svg_pval_thres = as.numeric(args[5])
-#num_nn = as.numeric(args[6])
 ndims = as.numeric(args[6])
 scVI_error = as.character(args[7])
 SNF_metric = as.character(args[8])
@@ -42,11 +38,11 @@ if(save_name == "thres"){
   save_path = fs::path(data_path, data_ref, paste(save_name, format(CIMLR_k,drop0Trailing=F), sep="_"))
 }
 
-#save_path = fs::path(data_path, data_ref, paste("thres",thres,sep="_"),"data")
+
 if(!dir.exists(save_path)){
   dir.create(save_path, recursive = T)
 }
-#load(fs::path(data_path, data_ref, paste(data_ref, "gene_grp_df", sep="_"), ext="RData"))
+
 params_df = read.csv(fs::path(data_path,"sim_params_df",ext="csv"),row.names = 1)
 
 task_id = as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
@@ -68,9 +64,6 @@ HVG_original = HVG_res$HVG
 
 ### only work with solely SVG
 source("functions/getSG_01182021.R")
-#load(fs::path("data_analysis/real_data/data",data_ref, ext = "RData"))
-#load(fs::path("data_analysis/real_data/04302021/results/HVG", paste(data_ref, "HVG", sep = "_"), ext = "RData"))
-#load(fs::path("data_analysis/real_data/04302021/results/SG", paste(data_ref, "SG_bin", sep = "_"), ext = "RData"))
 SG_res = getSG(raw_mat = raw_expr, spat_mat = spatial,
                wd = fs::path(data_path, data_ref), fname = paste(data_ref, svg_pval_thres, "SG", sep="_"),
                python_path = python_path, is_docker=F, pb=T,
@@ -82,12 +75,6 @@ SG_original = SG_original_df$genes
 genes_SG_only_sig = setdiff(SG_original, HVG_original)
 genes_HVG_only = setdiff(HVG_original, SG_original)
 genes_HVG_SG = intersect(HVG_original, SG_original)
-
-#genes_SG_only = spat_genes_bin[which(!(spat_genes_bin %in% HVG))]
-#genes_SG_only_sig = SG_bin %>% filter(genes %in% genes_SG_only) %>% filter(adj.p.value < 0.05)
-#genes_SG_only_sig = genes_SG_only_sig$genes
-#genes_HVG_SG = intersect(HVG, spat_genes_bin)
-#genes_HVG_only = HVG[which(!HVG %in% genes_HVG_SG)]
 
 ### compute gene proportions
 cell_id = HVG_res$GO@cell_ID
@@ -252,59 +239,22 @@ Giotto::spatPlot(GO,cell_color = "group",
                  legend_symbol_size = 2.5)
 
 ####### save SG
-#source("functions/getSG_01182021.R")
-#sim_SG_path = fs::path(data_path, data_ref, paste("thres",thres,sep="_"), "results", "SG")
 sim_SG_path = fs::path(save_path, "results", "SG")
 if(!dir.exists(sim_SG_path)){
   dir.create(sim_SG_path, recursive = T)
 }
-#SG_bin_test = getSG(raw_mat = new_raw,
-#                    spat_mat = spatial,
-#                    annot_df = annotation,
-#                    wd = sim_SG_path,
-#                    python_path = python_path, is_docker = F, spat_gene_method = "binspect",
-#                    fname =  paste(fname_attach, "SG_bin", sep = "_"), 
-#                    exp_thres = 1, min_cells = 1, min_genes = 1, max_dist_dly = "auto", pb = T)
-#SG_bin_GO = SG_bin_test$GO
-#SG_bin = SG_bin_test$SG
-#spat_genes_bin = df2_yes$gene_name
-#save(SG_bin_GO, SG_bin, spat_genes_bin, file = fs::path(sim_SG_path, paste(fname_attach, "SG_bin", sep = "_"), ext="RData"))
 fwrite(data.frame(GO@norm_expr[df2_yes$gene_name,]),
        file = fs::path(sim_SG_path, paste(fname_attach, "SG_bin_norm", sep = "_"), ext = "csv"), sep=",", row.names = T)
 fwrite(data.frame(as.matrix(GO@raw_exprs[df2_yes$gene_name,])),
        file = fs::path(sim_SG_path, paste(fname_attach, "SG_bin_raw", sep = "_"), ext = "csv"), sep=",", row.names = T)
 
 ##### save HVG
-#n_genes = length(df2_yes$gene_name)
-#sim_HVG_path = fs::path(data_path, data_ref, paste("thres",thres,sep="_"), "results", "HVG")
 sim_HVG_path = fs::path(save_path, "results", "HVG")
 if(!dir.exists(sim_HVG_path)){
   dir.create(sim_HVG_path, recursive = T)
 }
 HVG = genes_HVG_only
-#save(HVG_GO, HVG, file = fs::path(sim_HVG_path, paste(fname_attach, "HVG", sep = "_"), ext = "RData"))
 fwrite(data.frame(HVG_res$GO@norm_expr[HVG,]),
        file = fs::path(sim_HVG_path, paste(fname_attach, "HVG_norm", sep = "_"), ext = "csv"), sep=",", row.names = T)
 fwrite(data.frame(as.matrix(HVG_res$GO@raw_exprs[HVG,])),
        file = fs::path(sim_HVG_path, paste(fname_attach, "HVG_raw", sep = "_"), ext = "csv"), sep=",", row.names = T)
-
-####### save SG
-#source("functions/getSG_01182021.R")
-#sim_SG_path = fs::path(data_path, data_ref, paste("thres",thres,sep="_"), "results", "SG")
-#if(!dir.exists(sim_SG_path)){
-#  dir.create(sim_SG_path, recursive = T)
-#}
-#SG_bin_test = getSG(raw_mat = new_raw,
-#                    spat_mat = spatial,
-#                    annot_df = annotation,
-#                    wd = sim_SG_path,
-#                    python_path = python_path, is_docker = F, spat_gene_method = "binspect",
-#                        fname =  paste(fname_attach, "SG_bin", sep = "_"), min_cells = 1, min_genes = 1, max_dist_dly = "auto", pb = T)
-#SG_bin_GO = SG_bin_test$GO
-#SG_bin = SG_bin_test$SG
-#spat_genes_bin = df2_yes$gene_name
-#save(SG_bin_GO, SG_bin, spat_genes_bin, file = fs::path(sim_SG_path, paste(fname_attach, "SG_bin", sep = "_"), ext="RData"))
-#fwrite(data.frame(GO@norm_expr[df2_yes$gene_name,]),
-#       file = fs::path(sim_SG_path, paste(fname_attach, "SG_bin_norm", sep = "_"), ext = "csv"), sep=",", row.names = T)
-#fwrite(data.frame(as.matrix(GO@raw_exprs[df2_yes$gene_name,])),
-#       file = fs::path(sim_SG_path, paste(fname_attach, "SG_bin_raw", sep = "_"), ext = "csv"), sep=",", row.names = T)

@@ -1,14 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 16 15:45:07 2021
-
-@author: stefs
-"""
-
-#import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-#import plotnine as p9
+import random
 
 import scanpy as sc
 import scvi
@@ -24,13 +16,11 @@ import faulthandler
 import torch
 
 faulthandler.enable()
-#from tqdm.notebook import tqdm
 from tqdm import tqdm
 
 sc.set_figure_params(figsize=(4, 4))
 
 def train_model(file_name_svg, file_name_hvg, n_latent, desired_num_clusters, seed, num_nn = 30, default_resolution = 0.8, n_hidden = 128, dropout = 0.1, gene_likelihood = "zinb", latent_distribution = "normal", error_measure = "reconstruction"):
-  
   raw_svg_data = pd.read_csv(file_name_svg)
   raw_hvg_data = pd.read_csv(file_name_hvg)
 
@@ -44,6 +34,9 @@ def train_model(file_name_svg, file_name_hvg, n_latent, desired_num_clusters, se
   adata = anndata.AnnData(X = combined_data.T)
 
   torch.cuda.empty_cache()
+
+  os.environ['PYTHONHASHSEED'] = str(seed)
+  random.seed(seed)
   scvi.settings.seed = seed
 
   scvi.data.setup_anndata(adata)
@@ -85,37 +78,6 @@ def train_model(file_name_svg, file_name_hvg, n_latent, desired_num_clusters, se
   return adata,metric
 
 
-def get_ami(adata,annot_name = "ST_MOB1_annotations.csv"):
-
-  annotations = pd.read_csv(annot_name)
-  leiden_labels = adata.obs["leiden_scVI"].astype(int).values + 1
-  ground_labels = annotations["group"].values
-
-  ami = skm.adjusted_mutual_info_score(leiden_labels,ground_labels)
-  print("AMI score is ",ami)
-  #return ami
-
-def plot_data(adata,annot_name = "ST_MOB1_annotations.csv"):
-
-  sc.pl.umap(
-    adata,
-    color = "leiden_scVI",
-    title = "scVI Labels",
-    save = "Visium_Mouse_Kidney/MK_scVI_labels.pdf",
-    show = False
-  )
-
-  annotations = pd.read_csv(annot_name)
-  adata.obs["ground_truth_labels"] = annotations["x"].values
-  adata.obs["ground_truth_labels"] = adata.obs["ground_truth_labels"].astype("category")
-
-  sc.pl.umap(
-    adata,
-    color = "ground_truth_labels",
-    title = "Ground Truth Labels",
-    save = "Visium_Mouse_Kidney/ground_truth_labels.pdf",
-    show = False
-  )
 
 def grid_search(file_name_svg, file_name_hvg, desired_num_clusters, seed, list_latent = [], list_hidden = [], list_dropouts = [0.2], gene_likelihood = ["zinb"], latent_distribution = ["normal"], default_resolution = 0.8, num_nn = 30, error_measure="reconstruction"):
 
@@ -148,13 +110,13 @@ def main(job_id, data_path, thres, data_ref, diff_in_cov, svg_pval_thres, num_nn
     print("The job ID is ",job_id)
     
     'set working directory'
-    os.chdir("/home/liyijun/ST_benchmark_01082020")
+    os.chdir("/home/liyijun/ST_benchmark_01082020_re_1")
     os.chdir(data_path)
 
     'load parameters'
     params_name = "sim_params_df.csv"
     params_df = pd.read_csv(params_name, dtype = str).drop(columns="Unnamed: 0")
-    method_proc = pd.read_csv('/home/stanojes/final_ST_benchmarking_runs/method_proc.csv', index_col = 0)
+    method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020_re_1/method_proc.csv', index_col = 0)
     method_name = "scVI"
     repid = params_df["rep_id"][job_id]
     spat_lim = params_df["spat_prob"][job_id]

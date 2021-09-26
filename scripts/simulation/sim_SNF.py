@@ -68,12 +68,12 @@ def do_leiden_clustering(fused_mat, desired_num_clusters, label_save_name, curre
   return cluster_labels, partition
 
 def main(job_id, data_path, thres, data_ref, diff_in_cov, svg_pval_thres, num_nn, ndims, scVI_error, SNF_metric, WNN_smooth, CIMLR_k, save_name):
-  os.chdir("/home/liyijun/ST_benchmark_01082020")
+  os.chdir("/home/liyijun/ST_benchmark_01082020_re_1")
   os.chdir(data_path)
   
   params_name = "sim_params_df.csv"
   params_df = pd.read_csv(params_name, dtype = str).drop(columns="Unnamed: 0")
-  method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020/method_proc.csv', index_col = 0)
+  method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020_re_1/method_proc.csv', index_col = 0)
   method_name = "SNF"  
   repid = params_df["rep_id"][job_id]
   spat_lim = params_df["spat_prob"][job_id]

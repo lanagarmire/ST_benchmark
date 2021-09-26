@@ -57,10 +57,10 @@ elif save_name == "CIMLR_k":
 
 ### load simulation parameters   #### change
 import os
-os.chdir("/home/liyijun/ST_benchmark_01082020/")
+os.chdir("/home/liyijun/ST_benchmark_01082020_re_1/")
 os.chdir(data_path) 
 sim_params_df = pd.read_csv('sim_params_df.csv', index_col=0)
-method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020/method_proc.csv', index_col = 0)
+method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020_re_1/method_proc.csv', index_col = 0)
 method_name = "MOFA+"
 if sim_params_df.iloc[job_id]['spat_prob'] == 1.0:
   spat_lim = int(sim_params_df.iloc[job_id]['spat_prob'])
