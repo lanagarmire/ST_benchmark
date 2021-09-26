@@ -2,7 +2,7 @@ library(Giotto)
 library(dplyr)
 library(Matrix)
 library(data.table)
-setwd("/home/liyijun/ST_benchmark_01082020")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1")
 
 #### get arguments from bash scripts
 args = commandArgs(trailingOnly = TRUE)
@@ -34,7 +34,7 @@ if(save_name == "diff_in_cov"){
   save_path = fs::path(data_path, data_ref, paste(save_name, format(CIMLR_k,drop0Trailing=F), sep="_"))
 }
 
-#### load simulation parameters
+
 params_df = read.csv(fs::path(data_path,data_ref,"real_data_names",ext="csv"),row.names = 1)
 
 #### load dataset

@@ -1,5 +1,4 @@
-#.libPaths( c( "/nfs/home/jingzhe/R/x86_64-pc-linux-gnu-library/4.0" , .libPaths() ) )
-setwd('/home/liyijun/ST_benchmark_01082020') #change
+setwd('/home/liyijun/ST_benchmark_01082020_re_1') #change
 library(MOFA2)
 library(data.table)
 library(dplyr)
@@ -18,12 +17,11 @@ CIMLR_k = as.numeric(args[9])
 save_name = as.character(args[10])
 n_random_reps = as.numeric(args[11])
 
-### load simulation parameters
 params_df = read.csv(fs::path(data_path,data_ref,"real_data_names",ext="csv"),row.names = 1)
 method_proc = read.csv("method_proc.csv", row.names=1)
 method_name = "MOFA+"
 
-#### get dataname ##change
+#### get dataname 
 task_id = as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 data_name = params_df$name[task_id]
 
@@ -47,7 +45,6 @@ if(save_name == "diff_in_cov"){
 file = fread(fs::path(save_path, "results", "SG", paste(data_name, "SG_bin", method_proc[method_name,1], sep="_"), ext ="csv"))
 
 ### get MOFA+ output from .py script
-#change date
 if(ndims == 0){
   ndims = read.csv(fs::path(save_path, "results", "scVI", paste(data_name, "hyperparams", sep = "_"), ext = "csv"))
   ndims = ndims$n_latent

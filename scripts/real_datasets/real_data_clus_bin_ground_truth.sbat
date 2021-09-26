@@ -5,7 +5,7 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mem=10GB
 #SBATCH --cpus-per-task=1
-#SBATCH --array=14
+#SBATCH --array=15-19
 #SBATCH --output=outfiles/%x-%A-%a
 
 module load R/4.0.2 gcc/8.2.0
@@ -16,7 +16,7 @@ data_ref=real_data
 diff_in_cov=0.1
 svg_pval_thres=0.05
 num_nn=30
-ndims=10
+ndims=15
 scVI_error=reconstruction
 SNF_metric=sqeuclidean
 WNN_smooth=0

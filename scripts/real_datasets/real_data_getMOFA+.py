@@ -54,11 +54,11 @@ elif save_name == "CIMLR_k":
 
 ### load simulation parameters   #### change
 import os
-os.chdir("/home/liyijun/ST_benchmark_01082020/")
+os.chdir("/home/liyijun/ST_benchmark_01082020_re_1/")
 os.chdir(data_path) 
 params_name = f"{data_ref}/real_data_names.csv"
 params_df = pd.read_csv(params_name).drop(columns="Unnamed: 0")
-method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020/method_proc.csv', index_col = 0)
+method_proc = pd.read_csv('/home/liyijun/ST_benchmark_01082020_re_1/method_proc.csv', index_col = 0)
 method_name = "MOFA+"
 data_name = params_df["name"][job_id]
 

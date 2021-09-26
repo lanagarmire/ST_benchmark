@@ -1,5 +1,5 @@
 rm(list=ls())
-setwd("/home/liyijun/ST_benchmark_01082020/")
+setwd("/home/liyijun/ST_benchmark_01082020_re_1/")
 source("functions/run_cimlr_03232021.R")
 library(data.table)
 
@@ -34,7 +34,6 @@ if(save_name == "diff_in_cov"){
   save_path = fs::path(data_path, data_ref, paste(save_name, format(CIMLR_k,drop0Trailing=F), sep="_"))
 }
 
-#save_path = fs::path(data_path, data_ref, paste("thres",thres,sep="_"),"data")
 if(!dir.exists(save_path)){
   dir.create(save_path, recursive = T)
 }
@@ -50,7 +49,6 @@ task_id = as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 fname_attach = params_df$name[task_id]
 load(fs::path(data_path, data_ref, "data", fname_attach, ext = "RData"))
 cl0 = length(unique(annotation$group))
-#cl0 = length(unique(annotation$cell_types_coarse))
 
 ####### load HVG
 HVG_path = fs::path(save_path,"results", "HVG")
