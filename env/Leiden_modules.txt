@@ -1,0 +1,8 @@
+Bioinformatics
+gcc/10.3.0
+image-libraries/220318
+R/4.3.1
+python3.9-anaconda/2021.11
+gsl/2.7
+glpk/5.0
+Rgiotto/1.1.0
